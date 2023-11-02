@@ -72,7 +72,7 @@ def makeTable(file_path, location):
     climate_data.close()
 
     year_precip = aggYear(precips, False, 2)
-    year_snow = aggYear(snows, False, 1) 
+    year_snow = aggYear(snows, False, 1) if snow != "" else 0
     year_high = aggYear(highs, True, 1)
     year_low = aggYear(lows, True, 1)
     year_mean = aggYear(means, True, 1)
