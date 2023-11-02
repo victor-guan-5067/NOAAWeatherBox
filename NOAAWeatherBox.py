@@ -2,20 +2,43 @@ import csv, Categories
 import re
 from datetime import date
 
-months = Categories.month
+def aggYear(months, temp, decPlaces) :
+    divideBy = 12 if temp else 1
+    
+    total = 0
+    places = ''
+    if decPlaces == 1:
+        places = '{:.1f}'
+    else:
+        places = '{:.2f}'
 
-catNums = {2:'precip',3:'snow',4:'mid', 5:'high', 6:'low'}
+    for i in range(len(months)):
+        month = float(months[i])
+        total += month
+    
+    year_avg = places.format(total/divideBy)
+    return year_avg
+
 
 def makeTable(file_path, location):
+    months = Categories.month
+    catNums = {2:'precipitation inch', 3:'snow inch', 4:'mean F', 5:'high F', 6:'low F'}
+
     header = Categories.header.format(location)
     precip = " | precipitation colour   = green\n"
     snow = ""
     high_temp = ""
     low_temp = ""
     mean_temp = ""
-    today = date.today()
-    date_string = today.strftime("%B %-d, %Y")
+    date_string = date.today().strftime("%B %-d, %Y")
     footer = Categories.footer.format(date_string, date_string)
+
+    precips = []
+    snows = []
+    highs = []
+    lows = []
+    means = []
+
     climate_data = open(file_path, newline='')
     climate_data.readline()
 
@@ -27,24 +50,38 @@ def makeTable(file_path, location):
             month_data = split_row[i].replace(' ','')
             month_data = month_data.replace('"','')
             month_data = month_data.replace('\n', "")
-            if (catNums[i] == 'precip'):
-                precip += (" | {} precipitation inch = {}\n".format(month, month_data))
-            if (catNums[i] == 'snow' and month_data != ""):
-                snow += (" | {} snow inch = {}\n".format(month, month_data))
-            if (catNums[i] == 'mid'):
-                mean_temp += (" | {} mean F = {}\n".format(month, month_data))
-            if (catNums[i] == 'high'):
-                high_temp += (" | {} high F = {}\n".format(month, month_data))
-            if (catNums[i] == 'low'):
-                low_temp += (" | {} low F = {}\n".format(month, month_data))
+
+            cat = catNums[i]
+
+            if (cat == 'precipitation inch'):
+                precips.append(month_data)
+                precip += " | {} {} = {}\n".format(month, cat, month_data)
+            if (cat == 'snow inch' and month_data != ""):
+                snows.append(month_data)
+                snow += " | {} {} = {}\n".format(month, cat, month_data)
+            if (cat == 'mean F'):
+                means.append(month_data)
+                mean_temp += " | {} {} = {}\n".format(month, cat, month_data)
+            if (cat == 'high F'):
+                highs.append(month_data)
+                high_temp += " | {} {} = {}\n".format(month, cat, month_data)
+            if (cat == 'low F'):
+                lows.append(month_data)
+                low_temp += " | {} {} = {}\n".format(month, cat, month_data)
         
     climate_data.close()
 
-    precip += " | year precipitation inch = \n"
-    snow += " | year snow inch = \n"
-    high_temp += " | year high F = \n"
-    low_temp += " | year low F = \n"
-    mean_temp += " | year mean F = \n"
+    year_precip = aggYear(precips, False, 2)
+    year_snow = aggYear(snows, False, 1)
+    year_high = aggYear(highs, True, 1)
+    year_low = aggYear(lows, True, 1)
+    year_mean = aggYear(means, True, 1)
+
+    precip += " | year precipitation inch = {}\n".format(year_precip)
+    snow += " | year snow inch = {}\n".format(year_snow)
+    high_temp += " | year high F = {}\n".format(year_high)
+    low_temp += " | year low F = {}\n".format(year_low)
+    mean_temp += " | year mean F = {}\n".format(year_mean)
 
     weatherBox = header + Categories.record_highs + high_temp + mean_temp + low_temp + Categories.record_lows + precip + Categories.precip_days
     if snow != "":
