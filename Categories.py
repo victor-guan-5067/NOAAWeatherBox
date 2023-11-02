@@ -87,5 +87,4 @@ footer = ''' | source = [[National Oceanic and Atmospheric Administration|NOAA]]
 |title = Summary of Monthly Normals 1991-2020
 |publisher = National Oceanic and Atmospheric Administration
 |access-date = {}}}}}</ref>
-}}}}
-'''
+}}}}'''

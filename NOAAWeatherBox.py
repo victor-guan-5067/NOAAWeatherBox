@@ -14,7 +14,7 @@ def makeTable(file_path, location):
     low_temp = ""
     mean_temp = ""
     today = date.today()
-    date_string = today.strftime("%B %d, %Y")
+    date_string = today.strftime("%B %-d, %Y")
     footer = Categories.footer.format(date_string, date_string)
     climate_data = open(file_path, newline='')
     climate_data.readline()
