@@ -9,7 +9,7 @@ def aggYear(months, temp, decPlaces) :
     places = ''
     if decPlaces == 1:
         places = '{:.1f}'
-    else:
+    elif decPlaces == 2:
         places = '{:.2f}'
 
     for i in range(len(months)):
@@ -72,13 +72,14 @@ def makeTable(file_path, location):
     climate_data.close()
 
     year_precip = aggYear(precips, False, 2)
-    year_snow = aggYear(snows, False, 1)
+    year_snow = aggYear(snows, False, 1) 
     year_high = aggYear(highs, True, 1)
     year_low = aggYear(lows, True, 1)
     year_mean = aggYear(means, True, 1)
 
     precip += " | year precipitation inch = {}\n".format(year_precip)
-    snow += " | year snow inch = {}\n".format(year_snow)
+    if snow != "":
+        snow += " | year snow inch = {}\n".format(year_snow)
     high_temp += " | year high F = {}\n".format(year_high)
     low_temp += " | year low F = {}\n".format(year_low)
     mean_temp += " | year mean F = {}\n".format(year_mean)
