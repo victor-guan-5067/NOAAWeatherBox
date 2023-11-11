@@ -13,7 +13,7 @@ month = {	'"01"':'Jan',
 
 header = '''{{{{Weather box
  | width       = auto
- | collapsed   = 
+ | collapsed   = yes
  | single line = yes
  | location    = {} (1991–2020 normals, extremes –)
  '''
