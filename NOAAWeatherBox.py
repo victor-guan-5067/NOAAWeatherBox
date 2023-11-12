@@ -97,7 +97,8 @@ def makeTable(file_path, location):
         if ", " + state in location: 
             path_state = state
 
-    path = '/Users/victorguan/Documents/WeatherBoxes/NOAA/{}/{}.txt'.format(path_state, location)     
+    path = location+'.txt'
+    #state_path = '/Users/victorguan/Documents/WeatherBoxes/NOAA/{}/{}.txt'.format(path_state, location)     
     
     with open(path, "w") as weatherBoxes:
         print(weatherBox, file=weatherBoxes)

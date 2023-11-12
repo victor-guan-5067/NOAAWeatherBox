@@ -7,5 +7,5 @@ if __name__ == '__main__':
     for item in os.listdir(parent_dir):
         for state in state_names:
             if ", " + state in item: 
-                os.renames(parent_dir+item, parent_dir+state+'/'+item)
+                os.replace(parent_dir+item, parent_dir+state+'/'+item)
         
