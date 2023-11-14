@@ -7,5 +7,7 @@ if __name__ == '__main__':
     for item in os.listdir(parent_dir):
         for state in state_names:
             if ", " + state in item: 
+                if not os.path.exists(parent_dir+state+'/'):
+                    os.makedirs(parent_dir+state+'/')
                 os.replace(parent_dir+item, parent_dir+state+'/'+item)
         
