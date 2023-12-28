@@ -1,6 +1,4 @@
-import csv, Categories
-import re
-import os
+import Categories
 from datetime import date
 
 def aggYear(months, temp, decPlaces) :
@@ -90,15 +88,7 @@ def makeTable(file_path, location):
         weatherBox += snow + Categories.snow_days
     weatherBox += footer
 
-    state_names = ["Alaska", "Alabama", "Arkansas", "American Samoa", "Arizona", "California", "Colorado", "Connecticut", "District ", "of Columbia", "Delaware", "Florida", "Georgia", "Guam", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Virgin Islands", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
-
-    path_state = ''
-    for state in state_names:
-        if ", " + state in location: 
-            path_state = state
-
-    path = location+'.txt'
-    #state_path = '/Users/victorguan/Documents/WeatherBoxes/NOAA/{}/{}.txt'.format(path_state, location)     
+    path = location + '.txt'
     
     with open(path, "w") as weatherBoxes:
         print(weatherBox, file=weatherBoxes)
