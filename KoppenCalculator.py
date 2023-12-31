@@ -29,6 +29,10 @@ def aggYear(months, temp, decPlaces) :
 def work(file_path):
     if ".csv" in file_path:
        csvSort(file_path) 
+    elif ".txt" in file_path:
+        txtSort(file_path)
+    else:
+        print("invalid file type")
 
 
 def csvSort(file_path):
@@ -65,7 +69,32 @@ def csvSort(file_path):
 
 
 def txtSort(file_path):
-    pass
+    climate_data = open(file_path, 'r')
+    lines = climate_data.readlines()
+
+    temps = []
+    precips = []
+    mean_temp = 0
+    mean_precip = 0
+    for line in lines:
+        place = line.rfind('=') + 1
+
+        if len(temps) < 12 and "mean" in line:
+            f_temp = float(line[place:-1])
+            c_temp = f_to_c(f_temp)
+            temps.append(c_temp)
+        elif "year mean F" in line:
+            f_temp = float(line[place:-1])
+            mean_temp = f_to_c(f_temp)
+        if len(precips) < 12 and "precipitation inch" in line:
+            inch_precip = float(line[place:-1])
+            mm_precip = inch_to_mm(inch_precip)
+            precips.append(mm_precip)
+        elif "year precipitation inch" in line:
+            inch_precip = float(line[place:-1])
+            mean_precip = inch_to_mm(inch_precip)
+    
+    print(calculateKoppen(temps, precips, mean_temp, mean_precip))
 
 
 def calculateKoppen(temps, precips, mean_temp, mean_precip):
@@ -87,11 +116,14 @@ def calculateKoppen(temps, precips, mean_temp, mean_precip):
     summer_p_ratio = summer_precip/total_precip
 
     if summer_p_ratio >= 0.7:
-        arid_limit = mean_temp * 20 + 280
+        arid_limit = (mean_temp * 20) + 280
     elif 0.3 < summer_p_ratio < 0.7:
-        arid_limit = mean_temp * 20 + 140
+        arid_limit = (mean_temp * 20) + 140
     else:
         arid_limit = mean_temp * 20
+
+    print(summer_p_ratio)
+    print(arid_limit)
 
     if total_precip/arid_limit < 0.5:
         if mean_temp >= 18:
@@ -114,16 +146,17 @@ def calculateKoppen(temps, precips, mean_temp, mean_precip):
 
     if min(temps) <= -3:
         classification = "D"
+    elif -3 < min(temps) <=0:
+        classification = "C/D"
     else:
         classification = "C"
 
     summer_half = precips[4:10]
-    print(summer_half)
     winter_half = precips[1:4] + precips[10:]
         
-    if min(summer_half) < 0.33 * max(winter_half):
+    if min(summer_half) < 0.33 * max(winter_half) and min(summer_half) < 30:
         classification += "s"
-    elif max(summer_half) > 0.9 * min(winter_half):
+    elif min(winter_half) < max(summer_half)/10:
         classification += "w"
     else:
         classification += "f"
