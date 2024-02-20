@@ -1,4 +1,5 @@
 import Categories
+import os
 from datetime import date
 
 def aggYear(months, temp, decPlaces) :
@@ -19,11 +20,11 @@ def aggYear(months, temp, decPlaces) :
     return year_avg
 
 
-def makeTable(file_path, location):
+def makeTable(file_path, location, state):
     months = Categories.month
     catNums = {2:'precipitation inch', 3:'snow inch', 4:'mean F', 5:'high F', 6:'low F'}
 
-    header = Categories.header.format(location)
+    header = Categories.header.format(location, state)
     precip = " | precipitation colour   = green\n"
     snow = ""
     high_temp = ""
@@ -89,12 +90,23 @@ def makeTable(file_path, location):
     weatherBox += footer
 
     path = location + '.txt'
+
+    if state == "":
+        path = location + '.txt'
+    else:
+        path = state + '/' + location + '.txt'
+
+    parent_dir = os.getcwd()
+
+    if not os.path.exists(parent_dir+'/'+state+'/'):
+        os.makedirs(parent_dir+'/'+state+'/')
     
     with open(path, "w") as weatherBoxes:
         print(weatherBox, file=weatherBoxes)
 
 if __name__ == '__main__':
     filePath = input("File path: ")
-    location = input("location: ")
-    makeTable(filePath, location)
+    location = input("Location: ")
+    state = input("State: ")
+    makeTable(filePath, location, state)
 
