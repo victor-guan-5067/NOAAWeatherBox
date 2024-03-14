@@ -1,28 +1,33 @@
+from typing import Literal
 import Categories
 import os
 from datetime import date
 
-def aggYear(months, temp, decPlaces) :
+
+def find_year_avg(months: list, temp: bool, decPlaces: Literal[0, 1, 2]) :
     divideBy = 12 if temp else 1
     
     total = 0
-    places = ''
-    if decPlaces == 1:
-        places = '{:.1f}'
-    elif decPlaces == 2:
-        places = '{:.2f}'
+
+    match decPlaces:
+        case 0:
+            year_avg_str = '{}'
+        case 1:
+            year_avg_str = '{:.1f}'
+        case 2:
+            year_avg_str = '{:.2f}'
 
     for i in range(len(months)):
         month = float(months[i])
         total += month
     
-    year_avg = places.format(total/divideBy)
+    year_avg = year_avg_str.format(total/divideBy)
     return year_avg
 
 
 def makeTable(file_path, location, state):
-    months = Categories.month
-    catNums = {2:'precipitation inch', 3:'snow inch', 4:'mean F', 5:'high F', 6:'low F'}
+    months = Categories.months
+    categories = {2:'precipitation inch', 3:'snow inch', 4:'mean F', 5:'high F', 6:'low F'}
 
     header = Categories.header.format(location, state)
     precip = " | precipitation colour   = green\n"
@@ -49,60 +54,55 @@ def makeTable(file_path, location, state):
         for i in range(2, len(split_row)):
             month_data = split_row[i].replace(' ','')
             month_data = month_data.replace('"','')
-            month_data = month_data.replace('\n', "")
+            month_data = month_data.replace('\n', '')
 
-            cat = catNums[i]
+            category = categories[i]
 
-            if (cat == 'precipitation inch'):
-                precips.append(month_data)
-                precip += " | {} {} = {}\n".format(month, cat, month_data)
-            if (cat == 'snow inch' and month_data != ""):
-                snows.append(month_data)
-                snow += " | {} {} = {}\n".format(month, cat, month_data)
-            if (cat == 'mean F'):
-                means.append(month_data)
-                mean_temp += " | {} {} = {}\n".format(month, cat, month_data)
-            if (cat == 'high F'):
-                highs.append(month_data)
-                high_temp += " | {} {} = {}\n".format(month, cat, month_data)
-            if (cat == 'low F'):
-                lows.append(month_data)
-                low_temp += " | {} {} = {}\n".format(month, cat, month_data)
+            match category:
+                case 'precipitation inch':
+                    precips.append(month_data)
+                    precip += " | {} {} = {}\n".format(month, category, month_data)
+                case 'snow inch':
+                    snows.append(month_data)
+                    snow += " | {} {} = {}\n".format(month, category, month_data)
+                case 'mean F':
+                    means.append(month_data)
+                    mean_temp += " | {} {} = {}\n".format(month, category, month_data)
+                case 'high F':
+                    highs.append(month_data)
+                    high_temp += " | {} {} = {}\n".format(month, category, month_data)
+                case 'low F':
+                    lows.append(month_data)
+                    low_temp += " | {} {} = {}\n".format(month, category, month_data)
         
     climate_data.close()
 
-    year_precip = aggYear(precips, False, 2)
-    year_snow = aggYear(snows, False, 1) if snow != "" else 0
-    year_high = aggYear(highs, True, 1)
-    year_low = aggYear(lows, True, 1)
-    year_mean = aggYear(means, True, 1)
+    high_temp += " | year high F = {}\n".format(find_year_avg(highs, True, 1))
+    mean_temp += " | year mean F = {}\n".format(find_year_avg(means, True, 1))
+    low_temp += " | year low F = {}\n".format(find_year_avg(lows, True, 1))
+    precip += " | year precipitation inch = {}\n".format(find_year_avg(precips, False, 2))
 
-    precip += " | year precipitation inch = {}\n".format(year_precip)
     if snow != "":
-        snow += " | year snow inch = {}\n".format(year_snow)
-    high_temp += " | year high F = {}\n".format(year_high)
-    low_temp += " | year low F = {}\n".format(year_low)
-    mean_temp += " | year mean F = {}\n".format(year_mean)
+        snow += " | year snow inch = {}\n".format(find_year_avg(snows, False, 1))
 
     weatherBox = header + Categories.record_highs + high_temp + mean_temp + low_temp + Categories.record_lows + precip + Categories.precip_days
     if snow != "":
         weatherBox += snow + Categories.snow_days
     weatherBox += footer
 
-    path = location + '.txt'
-
     if state == "":
-        path = location + '.txt'
+        path = f'{location}.txt'
     else:
-        path = state + '/' + location + '.txt'
+        path = f'{state}/{location}.txt'
 
     parent_dir = os.getcwd()
 
-    if not os.path.exists(parent_dir+'/'+state+'/'):
-        os.makedirs(parent_dir+'/'+state+'/')
+    if not os.path.exists(f'{parent_dir}/{state}'):
+        os.makedirs(f'{parent_dir}/{state}')
     
     with open(path, "w") as weatherBoxes:
         print(weatherBox, file=weatherBoxes)
+
 
 if __name__ == '__main__':
     filePath = input("File path: ")
