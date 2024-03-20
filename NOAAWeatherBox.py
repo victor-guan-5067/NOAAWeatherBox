@@ -11,23 +11,53 @@ def find_year_avg(months: list, temp: bool, decPlaces: Literal[0, 1, 2]) :
 
     match decPlaces:
         case 0:
-            year_avg_str = '{}'
+            year_avg = '{}'
         case 1:
-            year_avg_str = '{:.1f}'
+            year_avg = '{:.1f}'
         case 2:
-            year_avg_str = '{:.2f}'
+            year_avg = '{:.2f}'
 
     for i in range(len(months)):
         month = float(months[i])
         total += month
     
-    year_avg = year_avg_str.format(total/divideBy)
+    year_avg.format(total/divideBy)
     return year_avg
 
 
-def makeTable(file_path, location, state):
+def records_string(records_str: str, high_low: Literal["high", "low"]):
+    
+    records_list = [high[:-4] for high in records_str.split()]
+    if len(records_list) == 13:
+        records_string = ""
+        for i in range(len(records_list)):
+            records_string += f" | {Categories.months[i+1]} record {high_low} F = {records_list[i]}\n"
+    else:
+        if high_low == "high":
+            records_string = Categories.record_highs
+        else:
+            records_string = Categories.record_lows
+
+    return records_string
+
+
+if __name__ == '__main__':
+    file_path = input("File path: ")
+    location = input("Location: ")
+    state = input("State: ")
+    # begin_year = input("Begin year: ")
+    # end_year = input("End_year: ")
+    # end_year = "por" if end_year == '' else end_year
+    record_high_input = input("record highs: ")
+    record_low_input = input("record lows: ")
+    nowdata_url = input("NOWData url: ")
+    pdf_url = input("pdf url: ")
+    
     months = Categories.months
     categories = {2:'precipitation inch', 3:'snow inch', 4:'mean F', 5:'high F', 6:'low F'}
+
+    record_highs = records_string(record_high_input, 'high')
+    record_lows = records_string(record_low_input, 'low')
 
     header = Categories.header.format(location, state)
     precip = " | precipitation colour   = green\n"
@@ -36,7 +66,7 @@ def makeTable(file_path, location, state):
     low_temp = ""
     mean_temp = ""
     date_string = date.today().strftime("%B %-d, %Y")
-    footer = Categories.footer.format(date_string, date_string)
+    footer = Categories.footer.format(date=date_string, nowdata_url=nowdata_url, pdf_url=pdf_url)
 
     precips = []
     snows = []
@@ -49,7 +79,8 @@ def makeTable(file_path, location, state):
 
     for row in climate_data:
         split_row = row.split(",")
-        month = months[split_row[1]]
+        month_int = int(split_row[1].replace('"', ''))
+        month = months[month_int]
         
         for i in range(2, len(split_row)):
             month_data = split_row[i].replace(' ','')
@@ -81,11 +112,10 @@ def makeTable(file_path, location, state):
     mean_temp += " | year mean F = {}\n".format(find_year_avg(means, True, 1))
     low_temp += " | year low F = {}\n".format(find_year_avg(lows, True, 1))
     precip += " | year precipitation inch = {}\n".format(find_year_avg(precips, False, 2))
-
     if snow != "":
         snow += " | year snow inch = {}\n".format(find_year_avg(snows, False, 1))
 
-    weatherBox = header + Categories.record_highs + high_temp + mean_temp + low_temp + Categories.record_lows + precip + Categories.precip_days
+    weatherBox = header + record_highs + high_temp + mean_temp + low_temp + record_lows + precip + Categories.precip_days
     if snow != "":
         weatherBox += snow + Categories.snow_days
     weatherBox += footer
@@ -102,11 +132,3 @@ def makeTable(file_path, location, state):
     
     with open(path, "w") as weatherBoxes:
         print(weatherBox, file=weatherBoxes)
-
-
-if __name__ == '__main__':
-    filePath = input("File path: ")
-    location = input("Location: ")
-    state = input("State: ")
-    makeTable(filePath, location, state)
-
