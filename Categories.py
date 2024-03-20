@@ -1,21 +1,24 @@
-month = {	'"01"':'Jan',
-		'"02"':'Feb',
-		'"03"':'Mar',
-		'"04"':'Apr',
-		'"05"':'May',
-		'"06"':'Jun',
-		'"07"':'Jul',
-		'"08"':'Aug',
-		'"09"':'Sep',
-		'"10"':'Oct',
-		'"11"':'Nov',
-		'"12"':'Dec'		}
+months = {
+    1:'Jan',
+	2:'Feb',
+	3:'Mar',
+	4:'Apr',
+	5:'May',
+	6:'Jun',
+	7:'Jul',
+	8:'Aug',
+	9:'Sep',
+	10:'Oct',
+	11:'Nov',
+	12:'Dec',
+	13:'year'
+    }
 
 header = '''{{{{Weather box
  | width       = auto
  | collapsed   = yes
  | single line = yes
- | location    = {} (1991–2020 normals, extremes –)
+ | location    = {}, {} (1991–2020 normals, extremes –)
  '''
 
 record_highs = '''| Jan record high F  = 
@@ -47,6 +50,7 @@ record_lows = ''' | Jan record low F  =
  | Dec record low F  = 
  | year record low F = 
 '''
+
 precip_days = ''' | unit precipitation days = 0.01 in
  | Jan precipitation days  = 
  | Feb precipitation days  = 
@@ -79,12 +83,12 @@ snow_days = ''' | unit snow days = 0.1 in
 '''
 
 footer = ''' | source = [[National Oceanic and Atmospheric Administration|NOAA]]<ref name="NOWData">{{{{cite web
-|url = 
+|url = {nowdata_url}
 |title = NOWData - NOAA Online Weather Data
 |publisher = National Oceanic and Atmospheric Administration
-|access-date = {}}}}}</ref><ref name="NCEI">{{{{cite web
-|url = 
+|access-date = {date}}}}}</ref><ref name="NCEI">{{{{cite web
+|url = {pdf_url}
 |title = Summary of Monthly Normals 1991-2020
 |publisher = National Oceanic and Atmospheric Administration
-|access-date = {}}}}}</ref>
+|access-date = {date}}}}}</ref>
 }}}}'''
