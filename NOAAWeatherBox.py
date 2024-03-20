@@ -21,7 +21,7 @@ def find_year_avg(months: list, temp: bool, decPlaces: Literal[0, 1, 2]) :
         month = float(months[i])
         total += month
     
-    year_avg.format(total/divideBy)
+    year_avg = year_avg.format(total/divideBy)
     return year_avg
 
 
