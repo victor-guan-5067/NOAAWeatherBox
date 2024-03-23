@@ -4,12 +4,12 @@ import os
 from datetime import date
 
 
-def find_year_avg(months: list, temp: bool, decPlaces: Literal[0, 1, 2]) :
-    divideBy = 12 if temp else 1
+def find_year_avg(months: list, temp: bool, dec_places: Literal[0, 1, 2]) :
+    divide_by = 12 if temp else 1
     
     total = 0
 
-    match decPlaces:
+    match dec_places:
         case 0:
             year_avg = '{}'
         case 1:
@@ -21,7 +21,7 @@ def find_year_avg(months: list, temp: bool, decPlaces: Literal[0, 1, 2]) :
         month = float(months[i])
         total += month
     
-    year_avg = year_avg.format(total/divideBy)
+    year_avg = year_avg.format(total/divide_by)
     return year_avg
 
 
@@ -94,8 +94,9 @@ if __name__ == '__main__':
                     precips.append(month_data)
                     precip += " | {} {} = {}\n".format(month, category, month_data)
                 case 'snow inch':
-                    snows.append(month_data)
-                    snow += " | {} {} = {}\n".format(month, category, month_data)
+                    if month_data != '':
+                        snows.append(month_data)
+                        snow += " | {} {} = {}\n".format(month, category, month_data)
                 case 'mean F':
                     means.append(month_data)
                     mean_temp += " | {} {} = {}\n".format(month, category, month_data)
