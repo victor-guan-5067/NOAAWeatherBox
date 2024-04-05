@@ -27,11 +27,11 @@ def find_year_avg(months: list, temp: bool, dec_places: Literal[0, 1, 2]) :
 
 def records_string(records_str: str, high_low: Literal["high", "low"]):
     
-    records_list = [high[:-4] for high in records_str.split()]
+    records_list = [temp_year[:-4] for temp_year in records_str.split()]
     if len(records_list) == 13:
         records_string = ""
         for i in range(len(records_list)):
-            records_string += f" | {Categories.months[i+1]} record {high_low} F = {records_list[i]}\n"
+            records_string += f"| {Categories.months[i+1]} record {high_low} F = {records_list[i]}\n"
     else:
         if high_low == "high":
             records_string = Categories.record_highs
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     record_lows = records_string(record_low_input, 'low')
 
     header = Categories.header.format(location, state)
-    precip = " | precipitation colour   = green\n"
+    precip = "| precipitation colour   = green\n"
     snow = ""
     high_temp = ""
     low_temp = ""
@@ -92,29 +92,29 @@ if __name__ == '__main__':
             match category:
                 case 'precipitation inch':
                     precips.append(month_data)
-                    precip += " | {} {} = {}\n".format(month, category, month_data)
+                    precip += "| {} {} = {}\n".format(month, category, month_data)
                 case 'snow inch':
                     if month_data != '':
                         snows.append(month_data)
-                        snow += " | {} {} = {}\n".format(month, category, month_data)
+                        snow += "| {} {} = {}\n".format(month, category, month_data)
                 case 'mean F':
                     means.append(month_data)
-                    mean_temp += " | {} {} = {}\n".format(month, category, month_data)
+                    mean_temp += "| {} {} = {}\n".format(month, category, month_data)
                 case 'high F':
                     highs.append(month_data)
-                    high_temp += " | {} {} = {}\n".format(month, category, month_data)
+                    high_temp += "| {} {} = {}\n".format(month, category, month_data)
                 case 'low F':
                     lows.append(month_data)
-                    low_temp += " | {} {} = {}\n".format(month, category, month_data)
+                    low_temp += "| {} {} = {}\n".format(month, category, month_data)
         
     climate_data.close()
 
-    high_temp += " | year high F = {}\n".format(find_year_avg(highs, True, 1))
-    mean_temp += " | year mean F = {}\n".format(find_year_avg(means, True, 1))
-    low_temp += " | year low F = {}\n".format(find_year_avg(lows, True, 1))
-    precip += " | year precipitation inch = {}\n".format(find_year_avg(precips, False, 2))
+    high_temp += "| year high F = {}\n".format(find_year_avg(highs, True, 1))
+    mean_temp += "| year mean F = {}\n".format(find_year_avg(means, True, 1))
+    low_temp += "| year low F = {}\n".format(find_year_avg(lows, True, 1))
+    precip += "| year precipitation inch = {}\n".format(find_year_avg(precips, False, 2))
     if snow != "":
-        snow += " | year snow inch = {}\n".format(find_year_avg(snows, False, 1))
+        snow += "| year snow inch = {}\n".format(find_year_avg(snows, False, 1))
 
     weatherBox = header + record_highs + high_temp + mean_temp + low_temp + record_lows + precip + Categories.precip_days
     if snow != "":
